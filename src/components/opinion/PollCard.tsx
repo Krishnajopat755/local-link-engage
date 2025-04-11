@@ -74,8 +74,7 @@ export function PollCard({ poll }: PollCardProps) {
                 </div>
                 <Progress 
                   value={option.votePercentage} 
-                  className="h-2"
-                  indicator={option.id === selectedOption ? "bg-primary" : "bg-muted-foreground"} 
+                  className={`h-2 ${option.id === selectedOption ? "bg-primary" : "bg-muted-foreground"}`}
                 />
                 <div className="text-xs text-muted-foreground text-right">
                   {option.votes} votes
