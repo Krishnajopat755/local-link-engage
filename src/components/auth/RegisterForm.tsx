@@ -23,6 +23,12 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
+import { createClient } from "@supabase/supabase-js";
+
+// Initialize Supabase client
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // Form validation schema
 const registerFormSchema = z.object({
@@ -41,11 +47,11 @@ const registerFormSchema = z.object({
   address: z.string().min(5, {
     message: "Please enter your full address.",
   }),
-  city: z.string().min(2, {
-    message: "Please enter your city.",
-  }),
   state: z.string({
     required_error: "Please select a state.",
+  }),
+  city: z.string().min(2, {
+    message: "Please enter your city.",
   }),
   zipCode: z.string().regex(/^\d{6}$/, {
     message: "Please enter a valid 6-digit PIN code.",
@@ -75,15 +81,45 @@ export function RegisterForm() {
   });
 
   // Form submission handler
-  function onSubmit(data: z.infer<typeof registerFormSchema>) {
+  async function onSubmit(data: z.infer<typeof registerFormSchema>) {
     console.log(data);
     
-    toast({
-      title: "Registration Submitted",
-      description: "We've sent a verification link to your email address.",
-    });
-    
-    // In a real app, we would send this data to an API
+    try {
+      // Register the user with Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+      });
+      
+      if (authError) throw authError;
+      
+      // Store additional user profile data
+      const { error: profileError } = await supabase.from('user_profiles').insert([
+        {
+          user_id: authData.user?.id,
+          first_name: data.firstName,
+          last_name: data.lastName,
+          address: data.address,
+          city: data.city,
+          state: data.state,
+          pin_code: data.zipCode,
+        }
+      ]);
+      
+      if (profileError) throw profileError;
+      
+      toast({
+        title: "Registration Successful",
+        description: "We've sent a verification link to your email address.",
+      });
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast({
+        title: "Registration Failed",
+        description: "There was an error creating your account. Please try again.",
+        variant: "destructive",
+      });
+    }
   }
 
   // Indian states for the dropdown
