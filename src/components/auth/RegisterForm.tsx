@@ -47,8 +47,8 @@ const registerFormSchema = z.object({
   state: z.string({
     required_error: "Please select a state.",
   }),
-  zipCode: z.string().regex(/^\d{5}(-\d{4})?$/, {
-    message: "Please enter a valid ZIP code.",
+  zipCode: z.string().regex(/^\d{6}$/, {
+    message: "Please enter a valid 6-digit PIN code.",
   }),
   agreeToTerms: z.boolean().refine(val => val === true, {
     message: "You must agree to the terms and conditions.",
@@ -86,14 +86,44 @@ export function RegisterForm() {
     // In a real app, we would send this data to an API
   }
 
-  // States for the dropdown
+  // Indian states for the dropdown
   const states = [
-    { value: "AL", label: "Alabama" },
-    { value: "AK", label: "Alaska" },
-    { value: "AZ", label: "Arizona" },
-    { value: "AR", label: "Arkansas" },
-    { value: "CA", label: "California" },
-    // Add more states as needed
+    { value: "AP", label: "Andhra Pradesh" },
+    { value: "AR", label: "Arunachal Pradesh" },
+    { value: "AS", label: "Assam" },
+    { value: "BR", label: "Bihar" },
+    { value: "CG", label: "Chhattisgarh" },
+    { value: "GA", label: "Goa" },
+    { value: "GJ", label: "Gujarat" },
+    { value: "HR", label: "Haryana" },
+    { value: "HP", label: "Himachal Pradesh" },
+    { value: "JK", label: "Jammu and Kashmir" },
+    { value: "JH", label: "Jharkhand" },
+    { value: "KA", label: "Karnataka" },
+    { value: "KL", label: "Kerala" },
+    { value: "MP", label: "Madhya Pradesh" },
+    { value: "MH", label: "Maharashtra" },
+    { value: "MN", label: "Manipur" },
+    { value: "ML", label: "Meghalaya" },
+    { value: "MZ", label: "Mizoram" },
+    { value: "NL", label: "Nagaland" },
+    { value: "OD", label: "Odisha" },
+    { value: "PB", label: "Punjab" },
+    { value: "RJ", label: "Rajasthan" },
+    { value: "SK", label: "Sikkim" },
+    { value: "TN", label: "Tamil Nadu" },
+    { value: "TS", label: "Telangana" },
+    { value: "TR", label: "Tripura" },
+    { value: "UK", label: "Uttarakhand" },
+    { value: "UP", label: "Uttar Pradesh" },
+    { value: "WB", label: "West Bengal" },
+    { value: "AN", label: "Andaman and Nicobar Islands" },
+    { value: "CH", label: "Chandigarh" },
+    { value: "DN", label: "Dadra and Nagar Haveli" },
+    { value: "DD", label: "Daman and Diu" },
+    { value: "DL", label: "Delhi" },
+    { value: "LD", label: "Lakshadweep" },
+    { value: "PY", label: "Puducherry" }
   ];
 
   return (
@@ -107,7 +137,7 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel>First name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Jane" {...field} />
+                  <Input placeholder="Rahul" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -121,7 +151,7 @@ export function RegisterForm() {
               <FormItem>
                 <FormLabel>Last name</FormLabel>
                 <FormControl>
-                  <Input placeholder="Doe" {...field} />
+                  <Input placeholder="Sharma" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -136,7 +166,7 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="jane.doe@example.com" type="email" {...field} />
+                <Input placeholder="rahul.sharma@example.com" type="email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -167,7 +197,7 @@ export function RegisterForm() {
             <FormItem>
               <FormLabel>Address</FormLabel>
               <FormControl>
-                <Input placeholder="123 Main St" {...field} />
+                <Input placeholder="123 Gandhi Road" {...field} />
               </FormControl>
               <FormDescription>
                 This helps us verify your residency in the community.
@@ -178,20 +208,6 @@ export function RegisterForm() {
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <FormField
-            control={form.control}
-            name="city"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>City</FormLabel>
-                <FormControl>
-                  <Input placeholder="Anytown" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          
           <FormField
             control={form.control}
             name="state"
@@ -219,12 +235,26 @@ export function RegisterForm() {
           
           <FormField
             control={form.control}
+            name="city"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>City</FormLabel>
+                <FormControl>
+                  <Input placeholder="Mumbai" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
             name="zipCode"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>ZIP Code</FormLabel>
+                <FormLabel>PIN Code</FormLabel>
                 <FormControl>
-                  <Input placeholder="12345" {...field} />
+                  <Input placeholder="400001" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
