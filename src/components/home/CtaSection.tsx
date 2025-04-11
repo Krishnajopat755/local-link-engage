@@ -21,6 +21,9 @@ export function CtaSection() {
             <Button onClick={() => navigate("/register")} size="lg" className="bg-primary">
               Get Started
             </Button>
+            <Button onClick={() => navigate("/report-problem")} variant="outline" size="lg">
+              Report a Problem
+            </Button>
             <Button onClick={() => navigate("/feed")} variant="outline" size="lg">
               Explore the Platform
             </Button>

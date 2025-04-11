@@ -9,7 +9,63 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      community_issues: {
+        Row: {
+          category: string
+          city: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at: string | null
+          description: string
+          id: string
+          images: string[] | null
+          location: string
+          pin_code: string
+          state: string
+          status: string
+          title: string
+          updated_at: string | null
+          votes: number | null
+        }
+        Insert: {
+          category: string
+          city: string
+          contact_email: string
+          contact_name: string
+          contact_phone: string
+          created_at?: string | null
+          description: string
+          id?: string
+          images?: string[] | null
+          location: string
+          pin_code: string
+          state: string
+          status?: string
+          title: string
+          updated_at?: string | null
+          votes?: number | null
+        }
+        Update: {
+          category?: string
+          city?: string
+          contact_email?: string
+          contact_name?: string
+          contact_phone?: string
+          created_at?: string | null
+          description?: string
+          id?: string
+          images?: string[] | null
+          location?: string
+          pin_code?: string
+          state?: string
+          status?: string
+          title?: string
+          updated_at?: string | null
+          votes?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
