@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, useFormContext } from "react-hook-form";
 import * as z from "zod";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { AlertCircle, Image, Loader2 } from "lucide-react";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
 
 // Form validation schema
@@ -47,7 +47,7 @@ const reportFormSchema = z.object({
     message: "Please enter a valid 6-digit PIN code.",
   }),
   category: z.string({
-    required_error: "Please select an issue category.",
+    required_error: 'Please select an issue category.',
   }),
   contactName: z.string().min(2, {
     message: "Please provide your name.",
@@ -84,34 +84,38 @@ export function ReportForm() {
     },
   });
 
-  // Handle image selection
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUploadError("");
-    
-    if (!e.target.files) return;
-    
-    const selectedFiles = Array.from(e.target.files);
-    
-    if (selectedFiles.length > 5) {
-      setUploadError("You can only upload a maximum of 5 images");
-      return;
-    }
-    
-    // Validate file types and sizes
-    const invalidFile = selectedFiles.find(file => !file.type.startsWith('image/'));
-    if (invalidFile) {
-      setUploadError("Only image files are allowed");
-      return;
-    }
-    
-    const largeFile = selectedFiles.find(file => file.size > 5 * 1024 * 1024); // 5MB limit
-    if (largeFile) {
-      setUploadError("Images must be smaller than 5MB");
-      return;
-    }
-    
-    setImages(selectedFiles);
-  };
+      setUploadError("");
+  
+      if (!e.target.files) return;
+  
+      const files = Array.from(e.target.files);
+      const newImages = [...images];
+  
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+  
+        // Validation checks
+        if (!file.type.startsWith("image/")) {
+          setUploadError("Only image files are allowed.");
+          return;
+        }
+  
+        if (file.size > 5 * 1024 * 1024) {
+          setUploadError("Images must be smaller than 5MB.");
+          return;
+        }
+  
+        if (newImages.length >= 5) {
+          setUploadError("You can only upload a maximum of 5 images.");
+          return;
+        }
+  
+        newImages.push(file);
+      }
+  
+      setImages(newImages);
+    };
 
   // Form submission handler
   async function onSubmit(data: z.infer<typeof reportFormSchema>) {
@@ -439,15 +443,38 @@ export function ReportForm() {
           
           {images.length > 0 && (
             <div>
-              <p className="text-sm font-medium mb-2">{images.length} image{images.length > 1 ? 's' : ''} selected</p>
+              <p className="text-sm font-medium mb-2">{5 - images.length} image{5 - images.length !== 1 ? 's' : ''} remaining</p>
               <div className="flex flex-wrap gap-2">
-                {Array.from(images).map((img, i) => (
-                  <div key={i} className="relative h-16 w-16 rounded-md overflow-hidden">
-                    <img 
-                      src={URL.createObjectURL(img)} 
-                      alt={`Preview ${i}`}
-                      className="h-full w-full object-cover" 
+                {images.map((img, index) => (
+                  <div key={index} className="relative h-20 w-20 rounded-md overflow-hidden">
+                    <img
+                      src={URL.createObjectURL(img)}
+                      alt={`Preview ${index + 1}`}
+                      className="h-full w-full object-cover"
                     />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImages(currentImages =>
+                          currentImages.filter((_, i) => i !== index)
+                        );
+                      }}
+                      className="absolute top-0 right-0 p-1 rounded-tr-md bg-gray-200 hover:bg-gray-300 text-gray-700"
+                      aria-label={`Remove image ${index + 1}`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </button>
                   </div>
                 ))}
               </div>

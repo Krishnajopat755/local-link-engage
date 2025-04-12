@@ -1,11 +1,16 @@
 
-import { Bell, HelpCircle, Menu, MessageSquare, User } from "lucide-react";
+import { Bell, HelpCircle, Menu, MessageSquare, Moon, Sun, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
+import { useTheme } from "next-themes";
+interface NavbarProps {
+  theme: "light" | "dark";
+  setTheme: (theme: "light" | "dark") => void;
+}
 
-export function Navbar() {
+export function Navbar(props: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const mobileMenuItems = [
@@ -16,6 +21,12 @@ export function Navbar() {
     { name: "Sign In", path: "/signin" },
     { name: "Register", path: "/register" },
   ];
+
+  const { theme, setTheme } = props;
+    const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -121,6 +132,17 @@ export function Navbar() {
             <HelpCircle className="h-5 w-5" />
             <span className="sr-only">Help</span>
           </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            title="Toggle Theme"
+            className="hidden md:flex"
+          >
+            {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+            <span className="sr-only">Toggle Theme</span>
+          </Button>
+
           <div className="hidden md:block">
             <Link to="/signin">
               <Button variant="ghost" className="mr-2">

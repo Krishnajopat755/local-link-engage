@@ -23,18 +23,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Link } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import { createClient } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
 
-// Initialize Supabase client
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Form validation schema
 const registerFormSchema = z.object({
-  firstName: z.string().min(2, {
-    message: "First name must be at least 2 characters.",
-  }),
   lastName: z.string().min(2, {
     message: "Last name must be at least 2 characters.",
   }),
@@ -113,14 +104,20 @@ export function RegisterForm() {
         description: "We've sent a verification link to your email address.",
       });
     } catch (error) {
-      console.error('Registration error:', error);
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+
+      console.error("Registration error:", error);
+
       toast({
         title: "Registration Failed",
-        description: "There was an error creating your account. Please try again.",
+        description: `There was an error creating your account: ${errorMessage}`,
         variant: "destructive",
       });
     }
   }
+
+
 
   // Indian states for the dropdown
   const states = [
