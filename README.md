@@ -60,4 +60,5 @@ Use Vercel
 
 ## Collaborators
 
-**Sakshi**:- 
+**Sakshi**:- https://github.com/sakshisemalti
+**Priyanshu**:- 
