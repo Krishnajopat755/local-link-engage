@@ -1,5 +1,6 @@
 
 import { ReactNode, useState, useEffect } from "react";
+import { Badge } from "../ui/badge";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 
@@ -30,7 +31,7 @@ export function Layout({ children }: LayoutProps) {
   }, [theme]);
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col dark:bg-slate-950 dark:text-slate-50">
       <Navbar theme={theme} setTheme={setTheme} />
       <main className="flex-1">{children}</main>
       <Footer />

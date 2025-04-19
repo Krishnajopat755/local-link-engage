@@ -1,5 +1,6 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
+import { Info } from "lucide-react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
@@ -18,6 +19,8 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
+        info: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+
       },
       size: {
         default: "h-10 px-4 py-2",
@@ -36,14 +39,24 @@ const buttonVariants = cva(
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+  asChild?: boolean;
+  isInfo?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, isInfo = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+
+    let content = props.children;
+
+    if (isInfo) {
+      content = <div className="flex gap-2 justify-center items-center"> <Info className="w-4 h-4"/> {props.children}</div>;
+    }
+
     return (
       <Comp
+        {...props}
+        
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
         {...props}
